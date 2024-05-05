@@ -25,7 +25,7 @@ public class UsuarioController {
 
     @PostMapping("/insertar-usuario")
     public ResponseEntity<?> insertarNuevoUsuario(@RequestBody Usuario usuario) throws SQLException, IOException {
-        System.out.println();
+        System.out.println("hola?");
         return new ResponseEntity<>(usuarioService.save(usuario), HttpStatus.OK);
     }
 }
