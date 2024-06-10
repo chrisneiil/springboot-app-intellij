@@ -11,6 +11,8 @@ public interface PermisoRepository extends CrudRepository<Permiso, Integer> {
 
     Permiso save(Permiso permiso);
 
+
+    Optional<Permiso> findByPermiso(String permiso);
     Optional<Permiso> findById(Integer idPermiso);
 
 }

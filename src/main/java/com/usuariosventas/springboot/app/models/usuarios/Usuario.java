@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "usuarios")
 public class Usuario {
     @Id
-    @Column(name = "rut")
+    @Column(name = "rut", unique = true)
     private Integer rut;
     @Column(name = "nombre")
     private String nombre;
@@ -30,6 +30,27 @@ public class Usuario {
             uniqueConstraints = {@UniqueConstraint(columnNames = {"id_usuario", "id_permiso"})}
     )
     private List<Permiso> permisos;
+    @Transient
+    private boolean admin;
+
+    @Column(name = "enable")
+    private boolean enable;
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 
     public List<Permiso> getPermisos() {
         return permisos;

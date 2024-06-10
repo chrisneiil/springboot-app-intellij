@@ -1,7 +1,12 @@
 package com.usuariosventas.springboot.app.config.security;
 
+import com.usuariosventas.springboot.app.config.security.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,7 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SpringSecurityConfig {
-
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -20,10 +30,17 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("Aplicando configuracion...");
-        return http.authorizeHttpRequests((authz) -> authz.requestMatchers("/usuario/public/**").permitAll()
-                        .requestMatchers("/permiso/**").permitAll()
-                )
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authz) -> authz.requestMatchers("/usuario/public/**").permitAll()
+                        .requestMatchers("/permiso/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement(managment -> managment.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
