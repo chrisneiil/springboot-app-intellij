@@ -1,6 +1,7 @@
 package com.usuariosventas.springboot.app.config.security;
 
 import com.usuariosventas.springboot.app.config.security.filter.JwtAuthenticationFilter;
+import com.usuariosventas.springboot.app.config.security.filter.JwtValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +33,11 @@ public class SpringSecurityConfig {
         System.out.println("Aplicando configuracion...");
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz) -> authz.requestMatchers("/usuario/public/**").permitAll()
-                        .requestMatchers("/permiso/**").permitAll()
+                .authorizeHttpRequests((authz) ->
+                        authz.requestMatchers("/usuario/public/**").permitAll()
+                                .requestMatchers("/permiso/**")
+                                .permitAll().requestMatchers("/login").permitAll()
+                                .requestMatchers(request -> request.getRequestURI().contains("public")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -41,6 +45,7 @@ public class SpringSecurityConfig {
                         .permitAll()
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtValidationFilter(authenticationManager()))
                 .sessionManagement(managment -> managment.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }

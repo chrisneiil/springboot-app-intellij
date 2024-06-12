@@ -57,7 +57,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String rut = String.valueOf(usuario.getUsername());
         Collection<? extends GrantedAuthority> permisos = authResult.getAuthorities();
 
-        Claims claims = Jwts.claims().add("authorities", permisos).build();
+        Claims claims = Jwts.claims()
+                .add("authorities",new ObjectMapper().writeValueAsString(permisos))
+                .add("rut", rut)
+                .build();
+
         String token = Jwts.builder()
                 .subject(rut)
                 .claims(claims)
