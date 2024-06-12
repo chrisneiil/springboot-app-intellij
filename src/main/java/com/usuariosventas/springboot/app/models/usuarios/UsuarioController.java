@@ -26,12 +26,14 @@ public class UsuarioController {
     @PostMapping("/public/registrar-usuario")
     public ResponseEntity<?> registrarNuevoUsuario(@RequestBody Usuario usuario) throws SQLException, IOException {
         System.out.println("hola?");
+        usuario.setEnable(true);
         usuario.setAdmin(false);
         return new ResponseEntity<>(usuarioService.save(usuario), HttpStatus.OK);
     }
     @PostMapping("/insertar-usuario")
     public ResponseEntity<?> insertarNuevoUsuario(@RequestBody Usuario usuario) throws SQLException, IOException {
         System.out.println("hola?");
+        usuario.setEnable(true);
         return new ResponseEntity<>(usuarioService.save(usuario), HttpStatus.OK);
     }
 }

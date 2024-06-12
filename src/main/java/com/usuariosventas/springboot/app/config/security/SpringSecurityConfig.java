@@ -35,8 +35,8 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) ->
                         authz.requestMatchers("/usuario/public/**").permitAll()
-                                .requestMatchers("/permiso/**")
-                                .permitAll().requestMatchers("/login").permitAll()
+                                .requestMatchers("/permiso/**").permitAll()
+                                .requestMatchers("/login").permitAll()
                                 .requestMatchers(request -> request.getRequestURI().contains("public")).permitAll()
                         .anyRequest().authenticated()
                 )
